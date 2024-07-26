@@ -1,17 +1,23 @@
-def parse_file_to_matrix(filename):
+def parse_file():
     matrix = []
-    with open(filename, 'r', encoding='utf-8') as file:
+    with open("./past.txt", 'r', encoding='utf-8') as file:
         for line in file:
-            char, x, y = line.strip().split()
-            x, y = int(x), int(y)
-            if len(matrix) <= y:
-                matrix += [[] for _ in range(y - len(matrix) + 1)]
-            if len(matrix[y]) <= x:
-                matrix[y] += [' ' for _ in range(x - len(matrix[y]) + 1)]
-            matrix[y][x] = char
-    return matrix
+            if line != "\n": # removes empty lines from list
+                matrix.append(line.strip("\n").split (" "))
+                # .strip() above removes newline character from corrdinate list
+    
+    # set 2,3 columns to int
+    cols = {1: int, 2: int} #lists start at 0 in python. not 1. 
+    for row in matrix:
+       for col_index, new_type in cols.items():
+           row[col_index] = new_type(row[col_index]) 
 
+    find_asterisk_and_neighbors(matrix)
+
+
+# BFS algo should be implemented here.
 def find_asterisk_and_neighbors(matrix):
+    #allowed_chars = set(('═','║','╔','╗','╚','╝','╠','╣','╦','╩'))
     allowed_chars = set('═║╔╗╚╝╠╣╦╩')
     for y, row in enumerate(matrix):
         for x, char in enumerate(row):
@@ -21,10 +27,10 @@ def find_asterisk_and_neighbors(matrix):
                 for nx, ny in neighbors:
                     if 0 <= nx < len(row) and 0 <= ny < len(matrix) and matrix[ny][nx] not in allowed_chars and matrix[ny][nx] != '*':
                         letters.append(matrix[ny][nx])
-                return letters
+                print(letters)
     return []
 
-filename = r'C:\Users\Dro\Desktop\past.txt'  # Replace with your file path
-matrix = parse_file_to_matrix(filename)
+parse_file()
 letters = find_asterisk_and_neighbors(matrix)
 print(letters)
+
